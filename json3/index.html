@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page</title>
+    <style>
+        th,
+        td {
+            font: 15px 'Segoe UI';
+        }
+
+        table,
+        th,
+        td {
+            border: solid 1px #ddd;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+        }
+        tr:nth-child(odd) {background: #efefef}
+        th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="getData">Get data</button>
+    <br>
+    <br>
+    <div id="output"></div>
+
+
+    <script>
+
+        const getBtn = document.getElementById('getData');
+        const output = document.getElementById('output');
+        const table = document.getElementById('table');
+
+        getBtn.addEventListener('click', () => {
+
+         
+            fetch('/data.php')
+                .then((res) => {
+                    return res.json();
+                })
+                .then((data) => {
+                    output.innerHTML = '';
+                    let table = createTableAndHeader();
+                    
+                    output.appendChild(table);
+                    appendRows(table, data);
+                })
+                .catch((err) => {
+                    console.log("error fetching data");
+                    console.log(err);
+                })
+
+        });
+
+        function createTableAndHeader() {
+
+            let table = document.createElement("table");
+
+            let tr = table.insertRow(-1);
+            let headers = ["Name", "Occupation", "Country"];
+
+            for (let i = 0; i < 3; i++) {
+
+                let th = document.createElement("th");
+                th.innerHTML = headers[i];
+                tr.appendChild(th);
+            }
+
+            return table;
+        }
+
+        function appendRows(table, data) {
+
+            for (let i = 0; i < data.length; i++) {
+
+                let tr = table.insertRow(-1);
+
+                for (const [_, value] of Object.entries(data[i])) {
+
+                    let cell = tr.insertCell(-1);
+                    cell.innerHTML = value;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
